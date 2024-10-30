@@ -6,6 +6,8 @@ const cors = require("cors");
 dotenv.config();
 const { PORT } = process.env;
 const userRoutes = require("./routes/users");
+const productRoutes = require("./routes/products");
+const customerRoutes = require("./routes/customers");
 mongoose
   .connect("mongodb://localhost:27017")
   .then(() => {
@@ -20,4 +22,6 @@ mongoose.set("strictPopulate", false);
 app.use(cors());
 app.use(express.json());
 
-app.use("/", userRoutes);
+app.use("/auth", userRoutes);
+app.use("/product", productRoutes);
+app.use("/customer", customerRoutes);

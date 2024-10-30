@@ -2,35 +2,40 @@ const mongoose = require("mongoose");
 const Joi = require("joi");
 
 // creating user schema
-const userSchema = mongoose.Schema({
-  full_name: {
-    type: String,
-    required: true,
+const userSchema = mongoose.Schema(
+  {
+    full_name: {
+      type: String,
+      required: true,
+    },
+    email: {
+      type: String,
+      required: true,
+      uniqe: true,
+    },
+    username: {
+      type: String,
+      required: true,
+      uniqe: true,
+    },
+    password: {
+      type: String,
+      requireed: true,
+    },
+    policy: {
+      type: Boolean,
+    },
+    otp: {
+      type: String,
+    },
+    otpExpires: {
+      type: String,
+    },
   },
-  email: {
-    type: String,
-    required: true,
-    uniqe: true,
-  },
-  username: {
-    type: String,
-    required: true,
-    uniqe: true,
-  },
-  password: {
-    type: String,
-    requireed: true,
-  },
-  policy: {
-    type: Boolean,
-  },
-  otp: {
-    type: String,
-  },
-  otpExpires: {
-    type: String,
-  },
-});
+  {
+    timestamps: true, // Automatically adds createdAt and updatedAt fields
+  }
+);
 
 const User = mongoose.model("User", userSchema);
 
