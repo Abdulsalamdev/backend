@@ -8,6 +8,7 @@ const { PORT } = process.env;
 const userRoutes = require("./routes/users");
 const productRoutes = require("./routes/products");
 const customerRoutes = require("./routes/customers");
+const orderRoutes = require("./routes/orders");
 mongoose
   .connect("mongodb://localhost:27017")
   .then(() => {
@@ -25,3 +26,4 @@ app.use(express.json());
 app.use("/auth", userRoutes);
 app.use("/product", productRoutes);
 app.use("/customer", customerRoutes);
+app.use("/invoice", orderRoutes);

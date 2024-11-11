@@ -69,8 +69,36 @@ router.get("/", Auth, async (req, res) => {
     if (req.query.brand) {
       filters.brand = new RegExp(req.query.brand, "i");
     }
+
+    // Calculate the total number of products
+    const totalProducts = await Product.countDocuments(filters);
+
+    // Filter by createdAt if date range is provided (e.g., startDate and endDate)
+    if (req.query.startDate && req.query.endDate) {
+      // Parse the start and end dates from query params
+      const startDate = new Date(req.query.startDate);
+      const endDate = new Date(req.query.endDate);
+
+      // Add the date range filter to the filters object
+      filters.createdAt = { $gte: startDate, $lte: endDate };
+    } else if (req.query.startDate) {
+      // If only start date is provided
+      const startDate = new Date(req.query.startDate);
+      filters.createdAt = { $gte: startDate };
+    } else if (req.query.endDate) {
+      // If only end date is provided
+      const endDate = new Date(req.query.endDate);
+      filters.createdAt = { $lte: endDate };
+    }
+
+    const newlyAddedProducts = await Product.countDocuments(filters);
     const products = await Product.find(filters).sort("brand");
-    return res.status(200).send({ message: products });
+
+    // const newProduct;
+    return res.status(200).send({
+      totalProducts: totalProducts,
+      newProducts: newlyAddedProducts,
+    });
   } catch (error) {
     res.status(500).send({ message: error.message });
   }
