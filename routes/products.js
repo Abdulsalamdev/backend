@@ -5,7 +5,6 @@ const multer = require("multer");
 const Auth = require("../middleware/auth");
 const { ProductValidator, Product } = require("../model/product");
 const { PORT } = process.env;
-const path = require("path");
 dotenv.config();
 
 const storage = multer.diskStorage({
@@ -60,16 +59,6 @@ router.post("/", Auth, upload.single("file"), async (req, res) => {
 router.get("/", Auth, async (req, res) => {
   try {
     const filters = {};
-    if (req.query.name) {
-      filters.name = new RegExp(req.query.name, "i");
-    }
-    if (req.query.price) {
-      filters.price = { $gte: req.query.price };
-    }
-    if (req.query.brand) {
-      filters.brand = new RegExp(req.query.brand, "i");
-    }
-
     // Calculate the total number of products
     const totalProducts = await Product.countDocuments(filters);
 
@@ -96,6 +85,7 @@ router.get("/", Auth, async (req, res) => {
 
     // const newProduct;
     return res.status(200).send({
+      message: "total product retrieved successfully.",
       totalProducts: totalProducts,
       newProducts: newlyAddedProducts,
     });

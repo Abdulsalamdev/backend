@@ -1,39 +1,51 @@
 const mongoose = require("mongoose");
 const Joi = require("joi");
 
-const orderSchema = mongoose.Schema({
-  name: {
-    type: String,
-    required: true,
-  },
-  email: {
-    type: String,
-    required: true,
-  },
-  address: {
-    type: String,
-    required: true,
-  },
-  invoice_id: {
-    type: String,
-    required: true,
-  },
-  userId: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
-  products: [
-    {
-      productId: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Product",
-        required: true,
-      },
-      quantity: { type: String, required: true },
-      price: { type: String, required: true },
+const orderSchema = mongoose.Schema(
+  {
+    name: {
+      type: String,
+      required: true,
     },
-  ],
-  orderTotal: { type: String, required: true }, // Calculated at the time of order creation
-  status: { type: String, default: "pending" }, // Or any other statuses like 'completed'
-  orderDate: { type: Date, default: Date.now },
-});
+    email: {
+      type: String,
+      required: true,
+    },
+    address: {
+      type: String,
+      required: true,
+    },
+    invoice_id: {
+      type: String,
+      required: true,
+    },
+    userId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+    },
+    products: [
+      {
+        productId: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "Product",
+          required: true,
+        },
+        name: { type: String, required: true },
+        quantity: { type: String, required: true },
+        price: { type: String, required: true },
+      },
+    ],
+    orderTotal: { type: String, required: true }, // Calculated at the time of order creation
+    status: {
+      type: String,
+      enum: ["pending", "completed", "cancled"],
+      default: "pending",
+    }, // Or any other statuses like 'completed'
+    orderDate: { type: Date, default: Date.now },
+  },
+  { timestamps: true }
+);
 
 const Order = mongoose.model("Order", orderSchema);
 
@@ -54,6 +66,7 @@ const OrderValidator = (order) => {
           productId: Joi.string().required(),
           quantity: Joi.string().required(),
           price: Joi.string().required(),
+          name: Joi.string().required(),
         })
       )
       .min(1)
